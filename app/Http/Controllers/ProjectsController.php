@@ -22,59 +22,34 @@ class ProjectsController extends Controller
         //
         if( Auth::check() ){
              $projects = Project::where('user_id', Auth::user()->id)->get();
- 
               return view('projects.index', ['projects'=> $projects]);  
          }
          return view('auth.login');
     }
-
-
 
     public function adduser(Request $request){
          //add user to projects 
 
          //take a project, add a user to it
          $project = Project::find($request->input('project_id'));
-
-        
-
          if(Auth::user()->id == $project->user_id){
-
          $user = User::where('email', $request->input('email'))->first(); //single record
-
          //check if user is already added to the project
          $projectUser = ProjectUser::where('user_id',$user->id)
                                     ->where('project_id',$project->id)
                                     ->first();
-                                    
             if($projectUser){
                 //if user already exists, exit 
-        
                 return response()->json(['success' ,  $request->input('email').' is already a member of this project']); 
-               
             }
-
-
             if($user && $project){
-
                 $project->users()->attach($user->id); 
-
                      return response()->json(['success' ,  $request->input('email').' was added to the project successfully']); 
-                        
                     }
-                    
          }
-
          return redirect()->route('projects.show', ['project'=> $project->id])
          ->with('errors' ,  'Error adding user to project');
-        
-
-         
      }
-
-
-
-    
 
     /**
      * Show the form for creating a new resource.
@@ -88,7 +63,6 @@ class ProjectsController extends Controller
          if(!$company_id){
             $companies = Company::where('user_id', Auth::user()->id)->get();
          }
- 
          return view('projects.create',['company_id'=>$company_id, 'companies'=>$companies]);
     }
 
@@ -108,15 +82,11 @@ class ProjectsController extends Controller
                  'company_id' => $request->input('company_id'),
                  'user_id' => Auth::user()->id
              ]);
- 
- 
              if($project){
                  return redirect()->route('projects.show', ['project'=> $project->id])
                  ->with('success' , 'project created successfully');
              }
- 
          }
-         
              return back()->withInput()->with('errors', 'Error creating new project');
     }
 
@@ -130,11 +100,9 @@ class ProjectsController extends Controller
     {
         //
         $project = Project::find($project->id);
- 
         $comments = $project->comments;
          return view('projects.show', ['project'=>$project, 'comments'=> $comments ]);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -145,7 +113,6 @@ class ProjectsController extends Controller
     {
         //
         $project = Project::find($project->id);
-         
          return view('projects.edit', ['project'=>$project]);
     }
 
@@ -164,7 +131,6 @@ class ProjectsController extends Controller
                                          'name'=> $request->input('name'),
                                          'description'=> $request->input('description')
                                  ]);
- 
        if($projectUpdate){
            return redirect()->route('projects.show', ['project'=> $project->id])
            ->with('success' , 'project updated successfully');
@@ -184,12 +150,10 @@ class ProjectsController extends Controller
         //
         $findproject = Project::find( $project->id);
          if($findproject->delete()){
-             
              //redirect
              return redirect()->route('projects.index')
              ->with('success' , 'project deleted successfully');
          }
- 
          return back()->withInput()->with('error' , 'project could not be deleted');
     }
 }

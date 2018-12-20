@@ -17,15 +17,11 @@ class CompaniesController extends Controller
     {
         //
         if( Auth::check() ){
-
-
             $companies = Company::where('user_id', Auth::user()->id)->get();
-
              return view('companies.index', ['companies'=> $companies]);  
         }
         return view('auth.login');
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -52,15 +48,11 @@ class CompaniesController extends Controller
                 'description' => $request->input('description'),
                 'user_id' => Auth::user()->id
             ]);
-
-
             if($company){
                 return redirect()->route('companies.show', ['company'=> $company->id])
                 ->with('success' , 'Company created successfully');
             }
-
         }
-        
             return back()->withInput()->with('errors', 'Error creating new company');
     }
 
@@ -74,7 +66,6 @@ class CompaniesController extends Controller
     {
         //
          $company = Company::find($company->id);
-
         return view('companies.show', ['company'=>$company]);
     }
 
@@ -88,7 +79,6 @@ class CompaniesController extends Controller
     {
         //
         $company = Company::find($company->id);
-        
         return view('companies.edit', ['company'=>$company]);
     }
 
@@ -107,7 +97,6 @@ class CompaniesController extends Controller
                                         'name'=> $request->input('name'),
                                         'description'=> $request->input('description')
                                 ]);
-
       if($companyUpdate){
           return redirect()->route('companies.show', ['company'=> $company->id])
           ->with('success' , 'Company updated successfully');
@@ -127,12 +116,10 @@ class CompaniesController extends Controller
         //
         $findCompany = Company::find( $company->id);
         if($findCompany->delete()){
-            
             //redirect
             return redirect()->route('companies.index')
             ->with('success' , 'Company deleted successfully');
         }
-
         return back()->withInput()->with('error' , 'Company could not be deleted');
     }
 }
